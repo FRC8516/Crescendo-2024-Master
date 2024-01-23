@@ -16,7 +16,7 @@ Actuators: Falcon 500, using Pigeon 2.
 
 * SPARK MAX Firmware v1.6.3 - Adds features that are required for swerve
 * REVLib v2024.2.- - Includes APIs for the new firmware features
-* Phoenix5 v5.33.0 -- Includes APIs for firmware features
+* Phoenix5 v5.33.0 -- Includes APIs for firmware features ^Changed to Phoenix 6 api
 
 ## Configuration
 
