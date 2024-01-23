@@ -62,8 +62,8 @@ public final class Constants {
    public static final int kFrontRightTurningCanId = 3;
    public static final int kRearRightTurningCanId = 5;
 
-    public static final boolean kGyroReversed = false;
-    public static final int kPigeon2CanId = 1;
+   public static final boolean kGyroReversed = false;
+   public static final int kPigeon2CanId = 1;
   }
   
   public static final class ModuleConstants {
@@ -124,6 +124,7 @@ public final class Constants {
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
     public static final double kDriveDeadband = 0.15;  //@0.05
+    public static final int CANdleID = 1;
   }
 
   public static final class AutoConstants {
@@ -144,4 +145,57 @@ public final class Constants {
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
   }
+
+  public static final class ManipulatorConstants {
+    //Intake Motors - Falcon 500
+    public static final int kIntakeMotor = 10;
+    public static final int kIntakeWraistMotor = 11;
+    //Elevator Motor - Falcon 500
+    public static final int kElevatorMotor = 12;
+    //Shooter Motors - Falcon 500
+    public static final int kShooterIntakeMotor = 13;
+    public static final int kShooterIntakeWraistMotor = 14;
+    // NEO Vortex - Spark Flex
+    public static final int kShooterOutTakeMotor1 = 15;
+    public static final int kShooterOutTakeMotor2 = 16;
+}
+
+  public static final class EncoderConstants {
+    /**
+  * Which PID slot to pull gains from. Starting 2018, you can choose from
+  * 0,1,2 or 3. Only the first two (0,1) are visible in web-based
+  * configuration.
+  */
+  public static final int kSlotIdx = 0;
+
+  /**
+  * Talon FX supports multiple (cascaded) PID loops. For
+  * now we just want the primary one.
+  */
+  public static final int kPIDLoopIdx = 0;
+
+  /**
+  * set to zero to skip waiting for confirmation, set to nonzero to wait and
+  * report to DS if action fails.
+  */
+  public static final int kTimeoutMs = 40;
+
+  /**
+  * Gains used in Motion Magic, to be adjusted accordingly
+    * Gains(kp, ki, kd, kf, izone, peak output);
+    */
+    public static final Gains kGains = new Gains(0.2, 0.0, 0.0, 0.2, 0, 1.0);
+    public static final Gains kStage1Gains = new Gains(0.1023,0.0,0.0,0.503,0,1.0);
+    public static final Gains kStage2Gains = new Gains(0.2,0.0,0.0,0.2,0,1);
+}
+
+  //Led lights
+  public static final class LedLights {
+    public static final String Yellow = "Yellow";
+    public static final String Purple = "Purple";
+    public static final String Red = "Red";
+    public static final String Blue = "Blue";
+    public static final String Green = "Green";
+    public static final String Orange = "Orange";
+}
 }
