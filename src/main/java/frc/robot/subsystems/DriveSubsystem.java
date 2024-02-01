@@ -14,7 +14,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
 import com.ctre.phoenix6.hardware.Pigeon2;
-
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -42,7 +41,6 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kBackRightChassisAngularOffset);
 
   // The gyro sensor
-  //private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
   private final Pigeon2 m_pigeon1 = new Pigeon2(DriveConstants.kPigeon2CanId);
 
   // Slew rate filter variables for controlling lateral acceleration
@@ -67,6 +65,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
+    zeroHeading();
   }
 
   @Override
@@ -231,7 +230,11 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public double getHeading() {
-    return Rotation2d.fromDegrees(m_pigeon1.getAngle()).getDegrees();
+    //return m_pigeon1.getRotation2d().getDegrees();
+   // return Rotation2d.fromDegrees(m_pigeon1.getDegrees());
+    //return Rotation2d.fromDegrees(m_pigeon1.getAngle();
+   // return Rotation2d.fromDegrees(m_pigeon1.getAngle(m_pigeon1.getAccumGyroZ)).getDegrees();
+   return 0.0;
   }
 
   /**
@@ -240,6 +243,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return The turn rate of the robot, in degrees per second
    */
   public double getTurnRate() {
-    return m_pigeon1.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+   //@tk return m_pigeon1.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+   return 0.0;
   }
 }

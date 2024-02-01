@@ -9,29 +9,23 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.EncoderConstants;
 import frc.robot.Constants.ManipulatorConstants;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 
 public class Elevator extends SubsystemBase {
   	/* Hardware */
- 	 private final WPI_TalonFX m_ElevatorMotor = new WPI_TalonFX(ManipulatorConstants.kElevatorMotor, "rio");
+  private final TalonFX m_ElevatorMotor = new TalonFX(ManipulatorConstants.kIntakeMotor, "rio");
   	/** How much smoothing [0,8] to use during MotionMagic */
 	int _smoothing = 0;
+	/*TO DO */
 	 //backup key values not returned from perference table on shuffleboard //44 revs to max height
-	 final double LowScore = 5.0;
-	 final double HighScore = 40.0;
-	 final double MidScore = 10.0;
-	 final double Default = 8.0;
-	 final double FloorPickup = 15.0;
-	 final double LoadPosition = 25.0;
+	 final double FullyExtended = 5.0;
+	
 	//Use to get from the preference table
 	 final String ElevatorHigh = "Elevator High";
-	 final String ElevatorMid = "Elevator Mid";
-	 final String ElevatorLow = "Elevator Low";
-	 final String ElevatorFloor = "Elevator Floor";
-	 final String ElevatorLoad = "Elevator Station";
 	 final String ElevatorDefault = "Elvator Home";
 	 //local setpoint for moving to position by magic motion
 	 private double setPoint;
@@ -42,64 +36,80 @@ public class Elevator extends SubsystemBase {
 
   /** Creates a new Elevator. */
   public Elevator() {
-    /* Factory default hardware to prevent unexpected behavior */
-		m_ElevatorMotor.configFactoryDefault();
+	/* Factory default hardware to prevent unexpected behavior */
+	 m_ElevatorMotor.getConfigurator();
 
+     TalonFXConfiguration configs = new TalonFXConfiguration();
+
+	 /* Retry config apply up to 5 times, report if failure */
+	 StatusCode status = StatusCode.StatusCodeNotInitialized;
+	 for (int i = 0; i < 5; ++i) {
+	   status = m_ElevatorMotor.getConfigurator().apply(configs);
+	   if (status.isOK()) break;
+	 }
+	 if(!status.isOK()) {
+	   System.out.println("Could not apply configs, error code: " + status.toString());
+	 }
+	 //*** */ ToDO  Check direction!!! ****
+	 m_ElevatorMotor.setInverted(false);
+	 
+	 /* 
 		/* Configure Sensor Source for Pirmary PID */
-		m_ElevatorMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, EncoderConstants.kPIDLoopIdx,
-        EncoderConstants.kTimeoutMs);
+	//	m_ElevatorMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, EncoderConstants.kPIDLoopIdx,
+      //  EncoderConstants.kTimeoutMs);
 
 		/* set deadband to super small 0.001 (0.1 %).
 			The default deadband is 0.04 (4 %) */
-        m_ElevatorMotor.configNeutralDeadband(0.001, EncoderConstants.kTimeoutMs);
+      //  m_ElevatorMotor.configNeutralDeadband(0.001, EncoderConstants.kTimeoutMs);
 
 		/**
 		 * Configure Talon FX Output and Sensor direction accordingly Invert Motor to
 		 * have green LEDs when driving Talon Forward / Requesting Positive Output Phase
 		 * sensor to have positive increment when driving Talon Forward (Green LED)
 		 */
-		m_ElevatorMotor.setSensorPhase(true);
-		m_ElevatorMotor.setInverted(true);
+	//	m_ElevatorMotor.setSensorPhase(true);
+	//	m_ElevatorMotor.setInverted(true);
 		/*
 		 * Talon FX does not need sensor phase set for its integrated sensor
 		 * This is because it will always be correct if the selected feedback device is integrated sensor (default value)
 		 * and the user calls getSelectedSensor* to get the sensor's position/velocity. */
 		 
 		/* Set relevant frame periods to be at least as fast as periodic rate */
-		m_ElevatorMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, EncoderConstants.kTimeoutMs);
-      	m_ElevatorMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, EncoderConstants.kTimeoutMs);
+	//	m_ElevatorMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, EncoderConstants.kTimeoutMs);
+    //  	m_ElevatorMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, EncoderConstants.kTimeoutMs);
 
 		/* Set the peak and nominal outputs */
-		m_ElevatorMotor.configNominalOutputForward(0, EncoderConstants.kTimeoutMs);
-		m_ElevatorMotor.configNominalOutputReverse(0, EncoderConstants.kTimeoutMs);
-		m_ElevatorMotor.configPeakOutputForward(1, EncoderConstants.kTimeoutMs);
-      	m_ElevatorMotor.configPeakOutputReverse(-1, EncoderConstants.kTimeoutMs);
+	//	m_ElevatorMotor.configNominalOutputForward(0, EncoderConstants.kTimeoutMs);
+	//	m_ElevatorMotor.configNominalOutputReverse(0, EncoderConstants.kTimeoutMs);
+	//	m_ElevatorMotor.configPeakOutputForward(1, EncoderConstants.kTimeoutMs);
+   //   	m_ElevatorMotor.configPeakOutputReverse(-1, EncoderConstants.kTimeoutMs);
 
 		/* Set Motion Magic gains in slot0 - see documentation */
-		m_ElevatorMotor.selectProfileSlot(EncoderConstants.kSlotIdx, EncoderConstants.kPIDLoopIdx);
-		m_ElevatorMotor.config_kF(EncoderConstants.kSlotIdx, EncoderConstants.kGains.kF, EncoderConstants.kTimeoutMs);
-		m_ElevatorMotor.config_kP(EncoderConstants.kSlotIdx, EncoderConstants.kGains.kP, EncoderConstants.kTimeoutMs);
-		m_ElevatorMotor.config_kI(EncoderConstants.kSlotIdx, EncoderConstants.kGains.kI, EncoderConstants.kTimeoutMs);
-		m_ElevatorMotor.config_kD(EncoderConstants.kSlotIdx, EncoderConstants.kGains.kD, EncoderConstants.kTimeoutMs);
+	//	m_ElevatorMotor.selectProfileSlot(EncoderConstants.kSlotIdx, EncoderConstants.kPIDLoopIdx);
+	//	m_ElevatorMotor.config_kF(EncoderConstants.kSlotIdx, EncoderConstants.kGains.kF, EncoderConstants.kTimeoutMs);
+	//	m_ElevatorMotor.config_kP(EncoderConstants.kSlotIdx, EncoderConstants.kGains.kP, EncoderConstants.kTimeoutMs);
+	//	m_ElevatorMotor.config_kI(EncoderConstants.kSlotIdx, EncoderConstants.kGains.kI, EncoderConstants.kTimeoutMs);
+	//	m_ElevatorMotor.config_kD(EncoderConstants.kSlotIdx, EncoderConstants.kGains.kD, EncoderConstants.kTimeoutMs);
 
 		/* Set acceleration and vcruise velocity - see documentation */  //15000, 6000
-		m_ElevatorMotor.configMotionCruiseVelocity(25000, EncoderConstants.kTimeoutMs);
-		m_ElevatorMotor.configMotionAcceleration(6000, EncoderConstants.kTimeoutMs);
+	//	m_ElevatorMotor.configMotionCruiseVelocity(25000, EncoderConstants.kTimeoutMs);
+	//	m_ElevatorMotor.configMotionAcceleration(6000, EncoderConstants.kTimeoutMs);
 
 		/* Zero the sensor once on robot boot up */
-		m_ElevatorMotor.setSelectedSensorPosition(0, EncoderConstants.kPIDLoopIdx, EncoderConstants.kTimeoutMs);
-  }
+	//	m_ElevatorMotor.setSelectedSensorPosition(0, EncoderConstants.kPIDLoopIdx, EncoderConstants.kTimeoutMs);
+	 
+	}
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-	SmartDashboard.putNumber("Elevator Encoder", m_ElevatorMotor.getSelectedSensorPosition(EncoderConstants.kPIDLoopIdx));
+//	SmartDashboard.putNumber("Elevator Encoder", m_ElevatorMotor.getRotorPosition(EncoderConstants.kPIDLoopIdx));
   }
 
   public void SetElevatorToPosition(String Key) {
     //set up the grab from values at Smart Dashboard perference table
-	switch (Key) {
-		case RobotArmPos.ScoreLow:;
+	/*switch (Key) {
+		case Elevator:;
 			//Elevator Low
 		  	backUp = LowScore;
 			Key = ElevatorLow;
@@ -109,28 +119,9 @@ public class Elevator extends SubsystemBase {
 		    backUp = MidScore;
 			Key = ElevatorMid;
 			break;
-		case RobotArmPos.ScoreHigh:;
-		    //Elevator Mid
-		    backUp = HighScore;
-			Key = ElevatorHigh;
-			break;
-		case RobotArmPos.Default:;
-			//Elevator default
-			backUp = Default;
-			Key = ElevatorDefault;
-			break;
-		case RobotArmPos.Floor:;
-			//Elevator Floor
-			backUp = FloorPickup;
-			Key = ElevatorFloor;
-			break;
-		case RobotArmPos.Load:;
-			//Elevator Loading station
-			backUp = LoadPosition;
-			Key = ElevatorLoad;
-			break;
+
 		}
-	   
+	   */
 	//gets the current value
 	setPoint = getPreferencesDouble(Key, backUp);  
 	
@@ -153,8 +144,8 @@ public class Elevator extends SubsystemBase {
   
   //Motor control mode motion magic to set point
   private void MoveToPosition(double targetPos) {
-	m_ElevatorMotor.set(TalonFXControlMode.MotionMagic, targetPos);
-	currentSetPoint = targetPos;
+	//m_ElevatorMotor.set(TalonFXControlMode.MotionMagic, targetPos);
+	//currentSetPoint = targetPos;
   }
 
 	/**

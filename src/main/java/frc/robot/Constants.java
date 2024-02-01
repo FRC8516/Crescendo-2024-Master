@@ -198,4 +198,25 @@ public final class Constants {
     public static final String Green = "Green";
     public static final String Orange = "Orange";
 }
+
+  //Intake Positions 
+  public static final class IntakePositions {
+    public static final String HomePosition = "HomePosition";
+    public static final String FloorPickup = "FloorPickup";
+    public static final String TransferPosition = "TransferPostion";
+  }
+
+  //Shooter Positions
+  public static final class ShooterPositions {
+    public static final String HomePosition = "HomePosition";
+    public static final String TransferPosition = "TransferPosition";
+    public static final String AmpScoringPosition = "AmpScoringPosition";
+  }
+
+  //Elevator Positions
+  public static final class ElevatorPositions {
+    public static final String HomePosition = "HomePosition";
+    public static final String ExtendPosition = "ExtendPosition";
+  }
+
 }
