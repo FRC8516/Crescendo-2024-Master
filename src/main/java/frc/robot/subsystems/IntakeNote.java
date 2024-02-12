@@ -6,10 +6,11 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ManipulatorConstants;
 
@@ -22,10 +23,13 @@ public class IntakeNote extends SubsystemBase {
   private final VelocityVoltage m_voltageVelocity = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
   /* Start at velocity 0, no feed forward, use slot 1 */
   private final VelocityTorqueCurrentFOC m_torqueVelocity = new VelocityTorqueCurrentFOC(0, 0, 0, 1, false, false, false);
-  /* Keep a neutral out so we can disable the motor */
-  private final NeutralOut m_brake = new NeutralOut();
   //* Rotation Per Second */
   double desiredRotationsPerSecond = 50; // Go for plus/minus 10 rotations per second
+  //* Read Digital Input */
+  private DigitalInput m_sensorInput;
+  //* variables when using game piece detection  */
+  boolean isIntakingGamePiece;
+  public boolean isFinished;
 
   /** Creates a new IntakeNote. */
   public IntakeNote() {
@@ -62,11 +66,18 @@ public class IntakeNote extends SubsystemBase {
     }
     //*** */ ToDO  Check direction!!! ****
     m_IntakeMotor.setInverted(false);
+    //*  game piece detection   */
+    m_sensorInput = new DigitalInput(0);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if (m_sensorInput.get() == true) {
+      //Flag to stop motors and command call
+      isFinished = true;
+      
+    }
   }
 
   public void NoteIntake() {
@@ -82,6 +93,12 @@ public class IntakeNote extends SubsystemBase {
 
   public void TransferNoteToShooter() {
 
+  }
+
+  //* Stop motor motion / disable controller */
+  public void StopMotion() {
+    m_IntakeMotor.set(0.0);
+    m_IntakeMotor.stopMotor();
   }
 
 }

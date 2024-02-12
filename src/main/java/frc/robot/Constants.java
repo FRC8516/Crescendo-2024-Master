@@ -123,6 +123,7 @@ public final class Constants {
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kOperatorControllerPort = 1;
     public static final double kDriveDeadband = 0.15;  //@0.05
     public static final int CANdleID = 1;
   }
@@ -144,6 +145,7 @@ public final class Constants {
 
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
+    public static final double kVortexSpeedRpm = 6784;
   }
 
   public static final class ManipulatorConstants {
@@ -155,38 +157,15 @@ public final class Constants {
     //Shooter Motors - Falcon 500
     public static final int kShooterIntakeMotor = 13;
     public static final int kShooterIntakeWraistMotor = 14;
-    // NEO Vortex - Spark Flex
-    public static final int kShooterOutTakeMotor1 = 15;
-    public static final int kShooterOutTakeMotor2 = 16;
 }
 
-  public static final class EncoderConstants {
-    /**
-  * Which PID slot to pull gains from. Starting 2018, you can choose from
-  * 0,1,2 or 3. Only the first two (0,1) are visible in web-based
-  * configuration.
-  */
-  public static final int kSlotIdx = 0;
-
-  /**
-  * Talon FX supports multiple (cascaded) PID loops. For
-  * now we just want the primary one.
-  */
-  public static final int kPIDLoopIdx = 0;
-
-  /**
-  * set to zero to skip waiting for confirmation, set to nonzero to wait and
-  * report to DS if action fails.
-  */
-  public static final int kTimeoutMs = 40;
-
-  /**
-  * Gains used in Motion Magic, to be adjusted accordingly
-    * Gains(kp, ki, kd, kf, izone, peak output);
-    */
-    public static final Gains kGains = new Gains(0.2, 0.0, 0.0, 0.2, 0, 1.0);
-    public static final Gains kStage1Gains = new Gains(0.1023,0.0,0.0,0.503,0,1.0);
-    public static final Gains kStage2Gains = new Gains(0.2,0.0,0.0,0.2,0,1);
+public static final class Launcher {
+  // NEO Vortex - Spark Flex
+  public static final int kTopCanId = 15;
+  public static final int kBottomCanId = 16;
+  public static final int kCurrentLimit = 80;
+  public static final double kTopPower = 0.7;
+  public static final double kBottomPower = 0.8;
 }
 
   //Led lights
@@ -218,5 +197,7 @@ public final class Constants {
     public static final String HomePosition = "HomePosition";
     public static final String ExtendPosition = "ExtendPosition";
   }
+
+  //Shooter
 
 }

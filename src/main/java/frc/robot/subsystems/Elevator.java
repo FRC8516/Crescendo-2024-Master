@@ -7,19 +7,15 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.EncoderConstants;
 import frc.robot.Constants.ManipulatorConstants;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.NeutralOut;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 
 public class Elevator extends SubsystemBase {
   	/* Hardware */
   private final TalonFX m_ElevatorMotor = new TalonFX(ManipulatorConstants.kIntakeMotor, "rio");
-  	/** How much smoothing [0,8] to use during MotionMagic */
-	int _smoothing = 0;
 	/*TO DO */
 	 //backup key values not returned from perference table on shuffleboard //44 revs to max height
 	 final double FullyExtended = 5.0;
@@ -53,51 +49,7 @@ public class Elevator extends SubsystemBase {
 	 //*** */ ToDO  Check direction!!! ****
 	 m_ElevatorMotor.setInverted(false);
 	 
-	 /* 
-		/* Configure Sensor Source for Pirmary PID */
-	//	m_ElevatorMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, EncoderConstants.kPIDLoopIdx,
-      //  EncoderConstants.kTimeoutMs);
-
-		/* set deadband to super small 0.001 (0.1 %).
-			The default deadband is 0.04 (4 %) */
-      //  m_ElevatorMotor.configNeutralDeadband(0.001, EncoderConstants.kTimeoutMs);
-
-		/**
-		 * Configure Talon FX Output and Sensor direction accordingly Invert Motor to
-		 * have green LEDs when driving Talon Forward / Requesting Positive Output Phase
-		 * sensor to have positive increment when driving Talon Forward (Green LED)
-		 */
-	//	m_ElevatorMotor.setSensorPhase(true);
-	//	m_ElevatorMotor.setInverted(true);
-		/*
-		 * Talon FX does not need sensor phase set for its integrated sensor
-		 * This is because it will always be correct if the selected feedback device is integrated sensor (default value)
-		 * and the user calls getSelectedSensor* to get the sensor's position/velocity. */
-		 
-		/* Set relevant frame periods to be at least as fast as periodic rate */
-	//	m_ElevatorMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, EncoderConstants.kTimeoutMs);
-    //  	m_ElevatorMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, EncoderConstants.kTimeoutMs);
-
-		/* Set the peak and nominal outputs */
-	//	m_ElevatorMotor.configNominalOutputForward(0, EncoderConstants.kTimeoutMs);
-	//	m_ElevatorMotor.configNominalOutputReverse(0, EncoderConstants.kTimeoutMs);
-	//	m_ElevatorMotor.configPeakOutputForward(1, EncoderConstants.kTimeoutMs);
-   //   	m_ElevatorMotor.configPeakOutputReverse(-1, EncoderConstants.kTimeoutMs);
-
-		/* Set Motion Magic gains in slot0 - see documentation */
-	//	m_ElevatorMotor.selectProfileSlot(EncoderConstants.kSlotIdx, EncoderConstants.kPIDLoopIdx);
-	//	m_ElevatorMotor.config_kF(EncoderConstants.kSlotIdx, EncoderConstants.kGains.kF, EncoderConstants.kTimeoutMs);
-	//	m_ElevatorMotor.config_kP(EncoderConstants.kSlotIdx, EncoderConstants.kGains.kP, EncoderConstants.kTimeoutMs);
-	//	m_ElevatorMotor.config_kI(EncoderConstants.kSlotIdx, EncoderConstants.kGains.kI, EncoderConstants.kTimeoutMs);
-	//	m_ElevatorMotor.config_kD(EncoderConstants.kSlotIdx, EncoderConstants.kGains.kD, EncoderConstants.kTimeoutMs);
-
-		/* Set acceleration and vcruise velocity - see documentation */  //15000, 6000
-	//	m_ElevatorMotor.configMotionCruiseVelocity(25000, EncoderConstants.kTimeoutMs);
-	//	m_ElevatorMotor.configMotionAcceleration(6000, EncoderConstants.kTimeoutMs);
-
-		/* Zero the sensor once on robot boot up */
-	//	m_ElevatorMotor.setSelectedSensorPosition(0, EncoderConstants.kPIDLoopIdx, EncoderConstants.kTimeoutMs);
-	 
+	
 	}
 
   @Override
