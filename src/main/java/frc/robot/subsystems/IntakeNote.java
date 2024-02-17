@@ -76,7 +76,6 @@ public class IntakeNote extends SubsystemBase {
     if (m_sensorInput.get() == true) {
       //Flag to stop motors and command call
       isFinished = true;
-      
     }
   }
 
