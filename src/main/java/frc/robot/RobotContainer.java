@@ -16,7 +16,10 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.IntakePositions;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.Intake.InputNote;
+import frc.robot.commands.Intake.PositionIntakeWraist;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeNote;
 import frc.robot.subsystems.IntakeWraist;
@@ -41,8 +44,10 @@ public class RobotContainer {
   //* Candle Light Controller */
   public CandleControl m_CandleControl = new CandleControl();
   //* Intake Controllers */
-  private final IntakeNote m_IntakeNote = new IntakeNote();
+  private final IntakeNote mIntakeNote = new IntakeNote();
+  private final InputNote m_IntakeNote = new InputNote(mIntakeNote);
   private final IntakeWraist m_IntakeWraist = new IntakeWraist();
+  private final PositionIntakeWraist mIntakeWraist = new PositionIntakeWraist(m_IntakeWraist, IntakePositions.FloorPickup);
 
   //* The driver's joystick controller */ 
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -67,6 +72,7 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
                 true, true),
             m_robotDrive));
+     
   }
 
   /**
@@ -85,6 +91,12 @@ public class RobotContainer {
             () -> m_robotDrive.setX(),
             m_robotDrive));
     m_driverController.start().onTrue(Commands.runOnce(m_robotDrive::zeroHeading, m_robotDrive));
+
+    //Configure Joysticks actuators
+    //TESTING mech·an·ism #*********@@@@!!!!!!
+     m_driverController.a().onTrue(m_IntakeNote);
+     m_driverController.b().onTrue(mIntakeWraist);
+    
   }
 
   /**

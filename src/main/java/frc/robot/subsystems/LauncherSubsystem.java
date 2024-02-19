@@ -5,11 +5,18 @@ import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.ManipulatorConstants;
+
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
 public class LauncherSubsystem extends SubsystemBase {
   //Vortex Motors - Flex Max
   private CANSparkMax m_topMotor;
   private CANSparkMax m_bottomMotor;
+  //Falcon 500 Motor
+  private final TalonFX m_IntakeShooter;
 
   private boolean m_launcherRunning;
 
@@ -33,8 +40,10 @@ public class LauncherSubsystem extends SubsystemBase {
     m_bottomMotor.setIdleMode(IdleMode.kBrake);
 
     m_bottomMotor.burnFlash();
-
     m_launcherRunning = false;
+    
+    //Intake to the shooter motor is Falcon 500
+    m_IntakeShooter = new TalonFX(ManipulatorConstants.kShooterIntakeWraistMotor, "rio");
   }
 
   /**

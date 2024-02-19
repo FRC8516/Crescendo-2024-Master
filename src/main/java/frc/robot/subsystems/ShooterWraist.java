@@ -4,23 +4,23 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration; 
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
+
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.IntakePositions;
 import frc.robot.Constants.ManipulatorConstants;
 
-public class IntakeWraist extends SubsystemBase {
+public class ShooterWraist extends SubsystemBase {
   /* Hardware */
-  private final TalonFX m_IntakeWraistMotor = new TalonFX(ManipulatorConstants.kIntakeWraistMotor, "rio");
+  private final TalonFX m_ShooterWraistMotor = new TalonFX(ManipulatorConstants.kShooterIntakeWraistMotor, "rio");
     //Motion Magic
     private final MotionMagicVoltage m_mmReq = new MotionMagicVoltage(0);
     // create a Motion Magic Velocity request, voltage output
@@ -30,7 +30,7 @@ public class IntakeWraist extends SubsystemBase {
 	  final double TransferPosition = 2.0;
     final double LoadingStationPosition = 5.0;
     //Use to get from the preference table
-	  final String IntakePickup = "Intake Pickup";
+	  final String ShooterPickup = "Intake Pickup";
 	  final String IntakeTransfer = "Intake Transfer";
     final String IntakeLoading = "Intake Loading";
     //local setpoint for moving to position by magic motion
@@ -40,9 +40,8 @@ public class IntakeWraist extends SubsystemBase {
 	  //local variable to keep track of position
 	  private double currentSetPoint;
 	  private double moveSetpoint;
-  
-    /** Creates a new IntakeWraist. */
-  public IntakeWraist() {
+  /** Creates a new ShooterWraist. */
+  public ShooterWraist() {
     TalonFXConfiguration configs = new TalonFXConfiguration();
 
     /** *********************************************************************************************
@@ -65,7 +64,7 @@ public class IntakeWraist extends SubsystemBase {
     /* Retry config apply up to 5 times, report if failure */
     StatusCode status = StatusCode.StatusCodeNotInitialized;
     for (int i = 0; i < 5; ++i) {
-      status = m_IntakeWraistMotor.getConfigurator().apply(configs);
+      status = m_ShooterWraistMotor.getConfigurator().apply(configs);
       if (status.isOK()) break;
     }
     if(!status.isOK()) {
@@ -76,40 +75,12 @@ public class IntakeWraist extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    // This method will be called once per scheduler run
     //Updates position on the dashboard
-    StatusSignal<Double> dPosition = m_IntakeWraistMotor.getPosition();
+    StatusSignal<Double> dPosition = m_ShooterWraistMotor.getPosition();
     SmartDashboard.putNumber("Intake Position", dPosition.getValue());
   }
 
-  //Call by the commands to move intake wraist to positions
-  public void MoveIntakeToPosition(String sMoveTo) {
-    //Determines which position to move the intake wraist.
-    if (sMoveTo == IntakePositions.FloorPickup) {
-      //Floor Pickup
-		  	backUp = PickUpPosition;
-        Key = IntakePickup;
-    } else {
-      //Transfer note position
-		  	backUp = TransferPosition;
-        Key = IntakeTransfer;
-    }
-
-    //gets the current value
-	  setPoint = getPreferencesDouble(Key, backUp);
-    //sets the new position to the motor controller.
-	  this.MoveToPosition(setPoint);
-  }
-
-  //Move the Intake back to the home position
-  public void MoveToHomePosition() {
-     /* Use voltage position */
-     m_IntakeWraistMotor.setControl(m_mmReq.withPosition(0.2).withSlot(0));
-  }
-
-  private void MoveToPosition(double targetPos) {
-    /* Use voltage position */
-     m_IntakeWraistMotor.setControl(m_mmReq.withPosition(targetPos).withSlot(0));
-  }
 
   /**
     * Retrieve numbers from the preferences table. If the specified key is in

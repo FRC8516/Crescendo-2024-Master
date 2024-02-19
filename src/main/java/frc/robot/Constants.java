@@ -178,11 +178,12 @@ public static final class Launcher {
     public static final String Orange = "Orange";
 }
 
-  //Intake Positions 
+  //Intake Wraist Positions 
   public static final class IntakePositions {
     public static final String HomePosition = "HomePosition";
     public static final String FloorPickup = "FloorPickup";
     public static final String TransferPosition = "TransferPostion";
+    public static final String LoadingStationPosition = "LoadingPosition";
   }
 
   //Shooter Positions
@@ -196,6 +197,7 @@ public static final class Launcher {
   public static final class ElevatorPositions {
     public static final String HomePosition = "HomePosition";
     public static final String ExtendPosition = "ExtendPosition";
+    public static final String AmpPosition = "AmpPosition";
   }
 
   //Shooter

@@ -15,7 +15,7 @@ import com.ctre.phoenix6.controls.NeutralOut;
 
 public class Elevator extends SubsystemBase {
   	/* Hardware */
-  private final TalonFX m_ElevatorMotor = new TalonFX(ManipulatorConstants.kIntakeMotor, "rio");
+  	private final TalonFX m_ElevatorMotor = new TalonFX(ManipulatorConstants.kIntakeMotor, "rio");
 	/*TO DO */
 	 //backup key values not returned from perference table on shuffleboard //44 revs to max height
 	 final double FullyExtended = 5.0;
