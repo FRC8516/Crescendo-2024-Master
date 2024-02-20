@@ -6,9 +6,9 @@ package frc.robot.commands.Shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class OutTakeShooter extends Command {
-  /** Creates a new OutTakeShooter. */
-  public OutTakeShooter() {
+public class ShootAmp extends Command {
+  /** Creates a new ShootAmp. */
+  public ShootAmp() {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 

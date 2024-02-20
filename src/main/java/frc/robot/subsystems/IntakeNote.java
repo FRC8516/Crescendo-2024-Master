@@ -21,8 +21,6 @@ public class IntakeNote extends SubsystemBase {
   /* Be able to switch which control request to use based on a button press */
   /* Start at velocity 0, enable FOC, no feed forward, use slot 0 */
   private final VelocityVoltage m_voltageVelocity = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
-  /* Start at velocity 0, no feed forward, use slot 1 */
-  private final VelocityTorqueCurrentFOC m_torqueVelocity = new VelocityTorqueCurrentFOC(0, 0, 0, 1, false, false, false);
   //* Rotation Per Second */
   double dIntakeNoteSpeed = -50; // Go for plus/minus 10 rotations per second
   double dOutputNoteSpeed = 50; // Go for plus/minus 10 rotations per second
@@ -31,8 +29,6 @@ public class IntakeNote extends SubsystemBase {
  
   /** Creates a new IntakeNote. */
   public IntakeNote() {
-    m_IntakeMotor.getConfigurator();
-
     TalonFXConfiguration configs = new TalonFXConfiguration();
 
     /* Voltage-based velocity requires a feed forward to account for the back-emf of the motor */
@@ -78,16 +74,12 @@ public class IntakeNote extends SubsystemBase {
   public void NoteIntake() {
      /* Use voltage velocity */
      m_IntakeMotor.setControl(m_voltageVelocity.withVelocity(dIntakeNoteSpeed));
-     //desiredRotationsPerSecond to smartdashboard
-     SmartDashboard.putNumber("Intake Speed",dIntakeNoteSpeed);
   } 
 
   //Used transfer to shooter mechanism 
   public void ShootNote() {
-    double friction_torque = (-0.8 > 0) ? 1 : -1; // To account for friction, we add this to the arbitrary feed forward
-    /* Use torque velocity */
-    m_IntakeMotor.setControl(m_torqueVelocity.withVelocity(dOutputNoteSpeed).withFeedForward(friction_torque));
-    SmartDashboard.putNumber("Intake Speed", friction_torque);
+     /* Use voltage velocity */
+     m_IntakeMotor.setControl(m_voltageVelocity.withVelocity(dOutputNoteSpeed));
   }
 
   //See if the note is intaked into holder

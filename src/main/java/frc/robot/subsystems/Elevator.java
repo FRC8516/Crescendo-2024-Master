@@ -8,34 +8,53 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ManipulatorConstants;
+import frc.robot.Constants.ShooterPositions;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 
 public class Elevator extends SubsystemBase {
   	/* Hardware */
-  	private final TalonFX m_ElevatorMotor = new TalonFX(ManipulatorConstants.kIntakeMotor, "rio");
-	/*TO DO */
+  	private final TalonFX m_ElevatorMotor = new TalonFX(ManipulatorConstants.kElevatorMotor, "rio");
+	 //Motion Magic
+    private final MotionMagicVoltage m_mmReq = new MotionMagicVoltage(0);
 	 //backup key values not returned from perference table on shuffleboard //44 revs to max height
 	 final double FullyExtended = 5.0;
-	
+	 final double AmpPosition = 3.0;	
 	//Use to get from the preference table
 	 final String ElevatorHigh = "Elevator High";
-	 final String ElevatorDefault = "Elvator Home";
+	 final String ElevatorAmp = "Elvator Amp";
 	 //local setpoint for moving to position by magic motion
 	 private double setPoint;
 	 private double backUp;
 	 //locat variable to keep track of position
-	 private double currentSetPoint;
-	 private double moveSetpoint;
-
+	 StatusSignal<Double> dCurrentPosition;
+		
   /** Creates a new Elevator. */
   public Elevator() {
 	/* Factory default hardware to prevent unexpected behavior */
-	 m_ElevatorMotor.getConfigurator();
-
      TalonFXConfiguration configs = new TalonFXConfiguration();
+	  /** *********************************************************************************************
+     *  Motion Magic
+    /* Configure current limits   */
+    MotionMagicConfigs mm = configs.MotionMagic;
+    mm.MotionMagicCruiseVelocity = 5; // 5 rotations per second cruise
+    mm.MotionMagicAcceleration = 400; // Target acceleration of 400 rps/s (0.25 seconds to max)
+    mm.MotionMagicJerk = 4000; // Target jerk of 4000 rps/s/s (0.1 seconds)
+
+    Slot0Configs slot0 = configs.Slot0;
+    slot0.GravityType = GravityTypeValue.Arm_Cosine;
+    slot0.kS = 0.25; // Add 0.25 V output to overcome static friction
+    slot0.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
+    slot0.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
+    slot0.kP = 0.11; // An error of 1 rps results in 0.11 V output
+    slot0.kI = 0; // no output for integrated error
+    slot0.kD = 0; // no output for error derivative  
 
 	 /* Retry config apply up to 5 times, report if failure */
 	 StatusCode status = StatusCode.StatusCodeNotInitialized;
@@ -49,57 +68,55 @@ public class Elevator extends SubsystemBase {
 	 //*** */ ToDO  Check direction!!! ****
 	 m_ElevatorMotor.setInverted(false);
 	 
-	
 	}
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-//	SmartDashboard.putNumber("Elevator Encoder", m_ElevatorMotor.getRotorPosition(EncoderConstants.kPIDLoopIdx));
+	//Updates position on the dashboard
+     dCurrentPosition = m_ElevatorMotor.getPosition();
+    SmartDashboard.putNumber("Elevator Position", dCurrentPosition.getValue());
   }
 
   public void SetElevatorToPosition(String Key) {
     //set up the grab from values at Smart Dashboard perference table
-	/*switch (Key) {
-		case Elevator:;
-			//Elevator Low
-		  	backUp = LowScore;
-			Key = ElevatorLow;
+	switch (Key) {
+		case ShooterPositions.ExtendedPosition:;
+			//Elevator High
+		  	backUp = FullyExtended;
 			break;
-		case RobotArmPos.ScoreMid:;
-		    //Elevator Mid
-		    backUp = MidScore;
-			Key = ElevatorMid;
+		case ShooterPositions.AmpScoringPosition:;
+		    //Elevator Mid - Amp scoring position
+		    backUp = AmpPosition;
 			break;
-
+		case ShooterPositions.TransferPosition:;
+			//Home position / transfer
+			backUp = 0.1;
 		}
-	   */
+
 	//gets the current value
 	setPoint = getPreferencesDouble(Key, backUp);  
-	
-	/* Motion Magic */
-	/* 2048 ticks/rev * x Rotations in either direction */
-	double targetPos = setPoint * 2048;
+
 	//sets the new position to the motor controller.
-	this.MoveToPosition(targetPos);
+	this.MoveToPosition(setPoint);
   }
 
-  public void ElevatorUp(){
-    moveSetpoint = currentSetPoint + 2048;
-	this.MoveToPosition(moveSetpoint);
+  public void MoveToPosition(double targetPos) {
+	 /* Use voltage position */
+     m_ElevatorMotor.setControl(m_mmReq.withPosition(targetPos).withSlot(0));
   }
 
-  public void ElevatorDown(){
-	moveSetpoint = currentSetPoint - 2048;
-	this.MoveToPosition(moveSetpoint);
+  //This checks Current positon to setpoint for the commands calls - isFinished flag
+  public Boolean isElevatorInPosition() {
+	double dError = dCurrentPosition.getValue() - setPoint;
+	//Returns the check to see if the elevator is in position
+	if ((dError < 0.5) || (dError > -0.5)) {
+		return true;
+	} else {
+		return false;
+	}
   }
   
-  //Motor control mode motion magic to set point
-  private void MoveToPosition(double targetPos) {
-	//m_ElevatorMotor.set(TalonFXControlMode.MotionMagic, targetPos);
-	//currentSetPoint = targetPos;
-  }
-
 	/**
     * Retrieve numbers from the preferences table. If the specified key is in
     * the preferences table, then the preference value is returned. Otherwise,

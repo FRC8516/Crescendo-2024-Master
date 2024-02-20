@@ -4,10 +4,14 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration; 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -21,6 +25,8 @@ import frc.robot.Constants.ManipulatorConstants;
 public class IntakeWraist extends SubsystemBase {
   /* Hardware */
   private final TalonFX m_IntakeWraistMotor = new TalonFX(ManipulatorConstants.kIntakeWraistMotor, "rio");
+    //Differential Velocity Dutcycle
+    private final VoltageOut mVoltageOut = new VoltageOut(0.0);
     //Motion Magic
     private final MotionMagicVoltage m_mmReq = new MotionMagicVoltage(0);
     // create a Motion Magic Velocity request, voltage output
@@ -29,21 +35,32 @@ public class IntakeWraist extends SubsystemBase {
 	  final double PickUpPosition = 10.0;
 	  final double TransferPosition = 2.0;
     final double LoadingStationPosition = 5.0;
+    final double HomePosition = 0.2;
     //Use to get from the preference table
 	  final String IntakePickup = "Intake Pickup";
 	  final String IntakeTransfer = "Intake Transfer";
     final String IntakeLoading = "Intake Loading";
+    final String IntakeHome = "Intake Home";
     //local setpoint for moving to position by magic motion
 	  private double setPoint;
 	  private double backUp;
     private String Key;
 	  //local variable to keep track of position
-	  private double currentSetPoint;
-	  private double moveSetpoint;
+    StatusSignal<Double> dCurrentPosition;
+     /* Keep a brake request so we can disable the motor */
+    private final NeutralOut m_brake = new NeutralOut();
+    private final CoastOut m_coast = new CoastOut();
   
     /** Creates a new IntakeWraist. */
   public IntakeWraist() {
     TalonFXConfiguration configs = new TalonFXConfiguration();
+    //Used for the homing of the mech
+    configs.HardwareLimitSwitch.ReverseLimitSource = ReverseLimitSourceValue.LimitSwitchPin;
+    configs.HardwareLimitSwitch.ReverseLimitAutosetPositionEnable = true;
+    configs.HardwareLimitSwitch.ReverseLimitAutosetPositionValue = 0;
+    //Software limits - forward motion
+    configs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 28.0;
 
     /** *********************************************************************************************
      *  Motion Magic
@@ -60,8 +77,8 @@ public class IntakeWraist extends SubsystemBase {
     slot0.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
     slot0.kP = 0.11; // An error of 1 rps results in 0.11 V output
     slot0.kI = 0; // no output for integrated error
-    slot0.kD = 0; // no output for error derivative  
-    
+    slot0.kD = 0; // no output for error derivative
+       
     /* Retry config apply up to 5 times, report if failure */
     StatusCode status = StatusCode.StatusCodeNotInitialized;
     for (int i = 0; i < 5; ++i) {
@@ -77,23 +94,36 @@ public class IntakeWraist extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     //Updates position on the dashboard
-    StatusSignal<Double> dPosition = m_IntakeWraistMotor.getPosition();
-    SmartDashboard.putNumber("Intake Position", dPosition.getValue());
+    dCurrentPosition = m_IntakeWraistMotor.getPosition();
+    SmartDashboard.putNumber("Intake Position", dCurrentPosition.getValue());
   }
 
   //Call by the commands to move intake wraist to positions
   public void MoveIntakeToPosition(String sMoveTo) {
-    //Determines which position to move the intake wraist.
-    if (sMoveTo == IntakePositions.FloorPickup) {
-      //Floor Pickup
-		  	backUp = PickUpPosition;
-        Key = IntakePickup;
-    } else {
-      //Transfer note position
-		  	backUp = TransferPosition;
-        Key = IntakeTransfer;
-    }
 
+    //set up the grab from values at Smart Dashboard perference table
+    switch (sMoveTo) {
+      case IntakePositions.FloorPickup:;
+        //Floor Pickup
+        backUp = PickUpPosition;
+        Key = IntakePickup;
+        break;
+      case IntakePositions.LoadingStationPosition:;
+        //Loading Station note position
+        backUp = LoadingStationPosition;
+        Key = IntakeLoading;
+        break;
+      case IntakePositions.TransferPosition:;
+         //Transfer note position
+        backUp = TransferPosition;
+        Key = IntakeTransfer;
+        break;
+      case IntakePositions.HomePosition:;
+        //Move to home position
+        backUp = 0.2;
+        Key = IntakeHome;
+        break;
+    }
     //gets the current value
 	  setPoint = getPreferencesDouble(Key, backUp);
     //sets the new position to the motor controller.
@@ -109,6 +139,23 @@ public class IntakeWraist extends SubsystemBase {
   private void MoveToPosition(double targetPos) {
     /* Use voltage position */
      m_IntakeWraistMotor.setControl(m_mmReq.withPosition(targetPos).withSlot(0));
+  }
+
+  //This checks Current positon to setpoint for the commands calls - isFinished flag
+  public Boolean isIntakeWraistInPosition() {
+    double dError = dCurrentPosition.getValue() - setPoint;
+    SmartDashboard.putNumber("Intake Error", dError);
+    //Returns the check to see if the elevator is in position
+    if ((dError < 0.5) || (dError > -0.5)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public void StopMotion() {
+    m_IntakeWraistMotor.setControl(m_brake);
+    m_IntakeWraistMotor.setControl(mVoltageOut.withOutput(0.0));
   }
 
   /**

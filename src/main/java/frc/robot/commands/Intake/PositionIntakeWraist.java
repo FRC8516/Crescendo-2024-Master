@@ -10,6 +10,7 @@ import frc.robot.subsystems.IntakeWraist;
 public class PositionIntakeWraist extends Command {
   private final IntakeWraist m_IntakeWraist;
   private final String m_NewPosition;
+  boolean isCompleted;
 
   /** Creates a new PositionIntakeWraist. */
   public PositionIntakeWraist(IntakeWraist m_positionIntakeWraist, String whichPosition) {
@@ -22,17 +23,27 @@ public class PositionIntakeWraist extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     m_IntakeWraist.MoveIntakeToPosition(m_NewPosition);
+    /* 
+    if (m_IntakeWraist.isIntakeWraistInPosition() == true) {
+      isCompleted = true;
+    } else {
+      isCompleted = false;
+    }*/
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+ //   m_IntakeWraist.StopMotion();
+  }
 
   // Returns true when the command should end.
   @Override

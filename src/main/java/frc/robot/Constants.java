@@ -166,6 +166,7 @@ public static final class Launcher {
   public static final int kCurrentLimit = 80;
   public static final double kTopPower = 0.7;
   public static final double kBottomPower = 0.8;
+  public static final double kIntakeVelocity = -20;
 }
 
   //Led lights
@@ -188,7 +189,7 @@ public static final class Launcher {
 
   //Shooter Positions
   public static final class ShooterPositions {
-    public static final String HomePosition = "HomePosition";
+    public static final String ExtendedPosition = "HomePosition";
     public static final String TransferPosition = "TransferPosition";
     public static final String AmpScoringPosition = "AmpScoringPosition";
   }
