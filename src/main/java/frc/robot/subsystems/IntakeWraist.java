@@ -66,8 +66,8 @@ public class IntakeWraist extends SubsystemBase {
      *  Motion Magic
     /* Configure current limits   */
     MotionMagicConfigs mm = configs.MotionMagic;
-    mm.MotionMagicCruiseVelocity = 5; // 5 rotations per second cruise
-    mm.MotionMagicAcceleration = 400; // Target acceleration of 400 rps/s (0.25 seconds to max)
+    mm.MotionMagicCruiseVelocity = 15; // 5 rotations per second cruise
+    mm.MotionMagicAcceleration = 800; // Target acceleration of 400 rps/s (0.25 seconds to max)
     mm.MotionMagicJerk = 4000; // Target jerk of 4000 rps/s/s (0.1 seconds)
 
     Slot0Configs slot0 = configs.Slot0;
@@ -75,7 +75,7 @@ public class IntakeWraist extends SubsystemBase {
     slot0.kS = 0.25; // Add 0.25 V output to overcome static friction
     slot0.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
     slot0.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
-    slot0.kP = 0.11; // An error of 1 rps results in 0.11 V output
+    slot0.kP = 4.5; // An error of 1 rps results in 0.11 V output
     slot0.kI = 0; // no output for integrated error
     slot0.kD = 0; // no output for error derivative
        

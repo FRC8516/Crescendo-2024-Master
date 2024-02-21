@@ -20,9 +20,11 @@ import frc.robot.Constants.IntakePositions;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.Intake.InputNote;
 import frc.robot.commands.Intake.PositionIntakeWraist;
+import frc.robot.commands.Shooter.ShootAmp;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeNote;
 import frc.robot.subsystems.IntakeWraist;
+import frc.robot.subsystems.ShootNote;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -43,11 +45,17 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   //* Candle Light Controller */
   public CandleControl m_CandleControl = new CandleControl();
-  //* Intake Controllers */
+  //* Constructors for Subsystems */
   private final IntakeNote mIntakeNote = new IntakeNote();
-  private final InputNote m_IntakeNote = new InputNote(mIntakeNote);
+  private final ShootNote m_ShootNote = new ShootNote();
+
+  //* Constructors for Commands */
   private final IntakeWraist m_IntakeWraist = new IntakeWraist();
-  private final PositionIntakeWraist mIntakeWraist = new PositionIntakeWraist(m_IntakeWraist, IntakePositions.FloorPickup);
+  private final InputNote m_IntakeNote = new InputNote(mIntakeNote);
+  private final PositionIntakeWraist mIntakeWraistFloor = new PositionIntakeWraist(m_IntakeWraist, IntakePositions.FloorPickup);
+  private final PositionIntakeWraist mIntakeWraistHome = new PositionIntakeWraist(m_IntakeWraist, IntakePositions.HomePosition);  
+  
+  private final ShootAmp m_ShootAmp = new ShootAmp(m_ShootNote);
 
   //* The driver's joystick controller */ 
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -95,7 +103,9 @@ public class RobotContainer {
     //Configure Joysticks actuators
     //TESTING mech·an·ism #*********@@@@!!!!!!
      m_driverController.a().onTrue(m_IntakeNote);
-     m_driverController.b().onTrue(mIntakeWraist);
+     m_driverController.b().onTrue(mIntakeWraistFloor);
+     m_driverController.y().whileTrue(m_ShootAmp);
+     m_driverController.rightBumper().onTrue(mIntakeWraistHome);
     
   }
 

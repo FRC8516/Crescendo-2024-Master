@@ -1,17 +1,23 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkLowLevel;
-import com.revrobotics.CANSparkMax;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.Constants.ManipulatorConstants;
-import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel;
+import com.revrobotics.CANSparkMax;
 
-public class LauncherSubsystem extends SubsystemBase {
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Constants.ManipulatorConstants;
+
+public class ShootNote extends SubsystemBase {
   //Vortex Motors - Flex Max
   private CANSparkMax m_topMotor;
   private CANSparkMax m_bottomMotor;
@@ -20,16 +26,14 @@ public class LauncherSubsystem extends SubsystemBase {
    /* Start at velocity 0, enable FOC, no feed forward, use slot 0 */
   private final VelocityVoltage m_voltageVelocity = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
 
-  /**
-   * Creates a new LauncherSubsystem.
-   */
-  public LauncherSubsystem() {
+  /** Creates a new ShootNote. */
+  public ShootNote() {
     // create two new FLEX SPARK MAXs and configure them
     m_topMotor =
         new CANSparkMax(Constants.Launcher.kTopCanId, CANSparkLowLevel.MotorType.kBrushless);
     m_topMotor.setInverted(false);
     m_topMotor.setSmartCurrentLimit(Constants.Launcher.kCurrentLimit);
-    m_topMotor.setIdleMode(IdleMode.kBrake);
+    m_topMotor.setIdleMode(IdleMode.kCoast);
 
     m_topMotor.burnFlash();
 
@@ -37,7 +41,7 @@ public class LauncherSubsystem extends SubsystemBase {
         new CANSparkMax(Constants.Launcher.kBottomCanId, CANSparkLowLevel.MotorType.kBrushless);
     m_bottomMotor.setInverted(false);
     m_bottomMotor.setSmartCurrentLimit(Constants.Launcher.kCurrentLimit);
-    m_bottomMotor.setIdleMode(IdleMode.kBrake);
+    m_bottomMotor.setIdleMode(IdleMode.kCoast);
 
     m_bottomMotor.burnFlash();
   
@@ -74,33 +78,28 @@ public class LauncherSubsystem extends SubsystemBase {
       System.out.println("Could not apply configs, error code: " + status.toString());
     }
   }
-@Override
-  public void periodic() {  // this method will be called once per scheduler run
-    
+
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
   }
 
-    /**
-     * Turns the launcher on.  Can be run once and the launcher will stay running or run continuously in a {@code RunCommand}.
-     */
-    public void ScoreSpeaker() {
-      // set the launcher motor powers based on whether the launcher is on or not
-      m_topMotor.set(Constants.Launcher.kTopPower);
-      m_bottomMotor.set(Constants.Launcher.kBottomPower);
-       /* Use voltage velocity */
-      m_IntakeShooter.setControl(m_voltageVelocity.withVelocity(Constants.Launcher.kIntakeVelocity));
-    } 
-      
-      /**
-     * Turns the launcher off.  Can be run once and the launcher will stay running or run continuously in a {@code RunCommand}.
-     */
-    public void ScoreAmp() {
-    
-    }
+  public void ScoreAmp () {
+    /* Use voltage velocity */
+    m_IntakeShooter.setControl(m_voltageVelocity.withVelocity(Constants.Launcher.kIntakeVelocity));
+    SmartDashboard.putBoolean("Intake Shooter", true);
+  }
 
-    public void StopMotion() {
-      m_topMotor.set(0.0);
-      m_bottomMotor.set(0.0);
-      m_IntakeShooter.set(0.0);
-    }
-  
+  public void ScoreSpeaker () {
+    // set the launcher motor powers based on whether the launcher is on or not
+    m_topMotor.set(Constants.Launcher.kTopPower);
+    m_bottomMotor.set(Constants.Launcher.kBottomPower);
+  }
+
+  public void StopShooterMotion() {
+    m_topMotor.set(0.0);
+    m_bottomMotor.set(0.0);
+    m_IntakeShooter.set(0.0);
+    SmartDashboard.putBoolean("Intake Shooter", false);
+  }
 }
