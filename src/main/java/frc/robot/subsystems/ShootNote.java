@@ -31,7 +31,7 @@ public class ShootNote extends SubsystemBase {
     // create two new FLEX SPARK MAXs and configure them
     m_topMotor =
         new CANSparkMax(Constants.Launcher.kTopCanId, CANSparkLowLevel.MotorType.kBrushless);
-    m_topMotor.setInverted(false);
+    m_topMotor.setInverted(true);
     m_topMotor.setSmartCurrentLimit(Constants.Launcher.kCurrentLimit);
     m_topMotor.setIdleMode(IdleMode.kCoast);
 
@@ -94,6 +94,8 @@ public class ShootNote extends SubsystemBase {
     // set the launcher motor powers based on whether the launcher is on or not
     m_topMotor.set(Constants.Launcher.kTopPower);
     m_bottomMotor.set(Constants.Launcher.kBottomPower);
+    /* Use voltage velocity */
+    m_IntakeShooter.setControl(m_voltageVelocity.withVelocity(Constants.Launcher.kIntakeVelocity));
   }
 
   public void StopShooterMotion() {

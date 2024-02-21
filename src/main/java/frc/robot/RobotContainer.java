@@ -21,6 +21,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.commands.Intake.InputNote;
 import frc.robot.commands.Intake.PositionIntakeWraist;
 import frc.robot.commands.Shooter.ShootAmp;
+import frc.robot.commands.Shooter.ShootSpeaker;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeNote;
 import frc.robot.subsystems.IntakeWraist;
@@ -56,6 +57,7 @@ public class RobotContainer {
   private final PositionIntakeWraist mIntakeWraistHome = new PositionIntakeWraist(m_IntakeWraist, IntakePositions.HomePosition);  
   
   private final ShootAmp m_ShootAmp = new ShootAmp(m_ShootNote);
+  private final ShootSpeaker m_ShootSpeaker = new ShootSpeaker(m_ShootNote);
 
   //* The driver's joystick controller */ 
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -106,7 +108,7 @@ public class RobotContainer {
      m_driverController.b().onTrue(mIntakeWraistFloor);
      m_driverController.y().whileTrue(m_ShootAmp);
      m_driverController.rightBumper().onTrue(mIntakeWraistHome);
-    
+     m_driverController.leftBumper().whileTrue(m_ShootSpeaker);
   }
 
   /**
