@@ -20,6 +20,7 @@ import frc.robot.Constants.IntakePositions;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.ShooterPositions;
 import frc.robot.commands.Elevator.ClimbChain;
+import frc.robot.commands.Intake.AutomaticNoteIntake;
 import frc.robot.commands.Intake.InputNote;
 import frc.robot.commands.Intake.PositionIntakeWraist;
 import frc.robot.commands.Shooter.PositionShooterWraist;
@@ -64,10 +65,14 @@ public class RobotContainer {
   private final PositionIntakeWraist mIntakeWraistFloor = new PositionIntakeWraist(m_IntakeWraist, IntakePositions.FloorPickup);
   private final PositionIntakeWraist mIntakeWraistHome = new PositionIntakeWraist(m_IntakeWraist, IntakePositions.HomePosition);  
   private final Elevator mElevator = new Elevator();
+
   //Shooter Commands
   private final ShootAmp m_ShootAmp = new ShootAmp(m_ShootNote);
   private final ShootSpeaker m_ShootSpeaker = new ShootSpeaker(m_ShootNote);
   private final PositionShooterWraist m_PositionShooterWraist = new PositionShooterWraist(m_ShooterWraist, ShooterPositions.AmpScoringPosition);
+
+  //Automatic intake / position
+  private final AutomaticNoteIntake m_AutomaticNoteIntake = new AutomaticNoteIntake(m_IntakeWraist, mIntakeNote);
 
   //* The driver's joystick controller */ 
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -115,7 +120,7 @@ public class RobotContainer {
     //Configure Joysticks actuators
     //TESTING mech·an·ism #*********@@@@!!!!!!
      m_driverController.a().onTrue(m_IntakeNote);
-     m_driverController.b().onTrue(mIntakeWraistFloor);
+     m_driverController.b().onTrue(m_AutomaticNoteIntake);
      m_driverController.y().whileTrue(m_ShootAmp);
      m_driverController.rightBumper().onTrue(mIntakeWraistHome);
      m_driverController.leftBumper().whileTrue(m_ShootSpeaker);
