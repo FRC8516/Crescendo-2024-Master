@@ -18,20 +18,26 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakePositions;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.ShooterPositions;
+import frc.robot.commands.Elevator.ClimbChain;
 import frc.robot.commands.Intake.InputNote;
 import frc.robot.commands.Intake.PositionIntakeWraist;
+import frc.robot.commands.Shooter.PositionShooterWraist;
 import frc.robot.commands.Shooter.ShootAmp;
 import frc.robot.commands.Shooter.ShootSpeaker;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.IntakeNote;
 import frc.robot.subsystems.IntakeWraist;
 import frc.robot.subsystems.ShootNote;
+import frc.robot.subsystems.ShooterWraist;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.CandleControl;
 import java.util.List;
 
@@ -49,15 +55,19 @@ public class RobotContainer {
   //* Constructors for Subsystems */
   private final IntakeNote mIntakeNote = new IntakeNote();
   private final ShootNote m_ShootNote = new ShootNote();
+  private final ShooterWraist m_ShooterWraist = new ShooterWraist();
 
   //* Constructors for Commands */
+  //Intake Commands
   private final IntakeWraist m_IntakeWraist = new IntakeWraist();
   private final InputNote m_IntakeNote = new InputNote(mIntakeNote);
   private final PositionIntakeWraist mIntakeWraistFloor = new PositionIntakeWraist(m_IntakeWraist, IntakePositions.FloorPickup);
   private final PositionIntakeWraist mIntakeWraistHome = new PositionIntakeWraist(m_IntakeWraist, IntakePositions.HomePosition);  
-  
+  private final Elevator mElevator = new Elevator();
+  //Shooter Commands
   private final ShootAmp m_ShootAmp = new ShootAmp(m_ShootNote);
   private final ShootSpeaker m_ShootSpeaker = new ShootSpeaker(m_ShootNote);
+  private final PositionShooterWraist m_PositionShooterWraist = new PositionShooterWraist(m_ShooterWraist, ShooterPositions.AmpScoringPosition);
 
   //* The driver's joystick controller */ 
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -109,6 +119,11 @@ public class RobotContainer {
      m_driverController.y().whileTrue(m_ShootAmp);
      m_driverController.rightBumper().onTrue(mIntakeWraistHome);
      m_driverController.leftBumper().whileTrue(m_ShootSpeaker);
+
+    // Trigger leftClimber = new Trigger(()->m_operator.getLeftBumper()).and(()-> Math.abs(m_operator.getRawAxis(1))>0.1);
+    // Trigger ChainClimb = new Trigger(true, () -> m_operatorController.leftBumper());   //new Trigger(()->m_operatorController.leftBumper()).and(()-> Math.abs(m_operatorController.getRawAxis(1))>0.1);
+     
+    // ChainClimb.whileTrue(new ClimbChain(()-> -m_operatorController.getRawAxis(1), mElevator));
   }
 
   /**

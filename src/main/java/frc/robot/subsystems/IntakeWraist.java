@@ -5,15 +5,14 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import edu.wpi.first.wpilibj.Preferences;
@@ -23,19 +22,18 @@ import frc.robot.Constants.IntakePositions;
 import frc.robot.Constants.ManipulatorConstants;
 
 public class IntakeWraist extends SubsystemBase {
-  /* Hardware */
-  private final TalonFX m_IntakeWraistMotor = new TalonFX(ManipulatorConstants.kIntakeWraistMotor, "rio");
-    //Differential Velocity Dutcycle
-    private final VoltageOut mVoltageOut = new VoltageOut(0.0);
+    /* Hardware */
+    private final TalonFX m_IntakeWraistMotor = new TalonFX(ManipulatorConstants.kIntakeWraistMotor, "rio");
     //Motion Magic
     private final MotionMagicVoltage m_mmReq = new MotionMagicVoltage(0);
     // create a Motion Magic Velocity request, voltage output
     // private final MotionMagicVelocityVoltage m_request = new MotionMagicVelocityVoltage(0);
-    //backup key values not returned from perference table on shuffleboard....80:1 Gear box
-	  final double PickUpPosition = 10.0;
-	  final double TransferPosition = 2.0;
-    final double LoadingStationPosition = 5.0;
-    final double HomePosition = 0.2;
+    // backup key values not returned from perference table on shuffleboard....80:1 Gear box
+    // This value is entered degrees
+	  final double PickUpPosition = 200;
+	  final double TransferPosition = 40;
+    final double LoadingStationPosition = 90;
+    final double HomePosition = 0.1;
     //Use to get from the preference table
 	  final String IntakePickup = "Intake Pickup";
 	  final String IntakeTransfer = "Intake Transfer";
@@ -47,9 +45,10 @@ public class IntakeWraist extends SubsystemBase {
     private String Key;
 	  //local variable to keep track of position
     StatusSignal<Double> dCurrentPosition;
-     /* Keep a brake request so we can disable the motor */
+    /* Keep a brake request so we can disable the motor */
     private final NeutralOut m_brake = new NeutralOut();
-    private final CoastOut m_coast = new CoastOut();
+    //private final CoastOut m_coast = new CoastOut();
+    private double scale = 360;
   
     /** Creates a new IntakeWraist. */
   public IntakeWraist() {
@@ -60,25 +59,28 @@ public class IntakeWraist extends SubsystemBase {
     configs.HardwareLimitSwitch.ReverseLimitAutosetPositionValue = 0;
     //Software limits - forward motion
     configs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 28.0;
+    configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 300;  //28
 
     /** *********************************************************************************************
      *  Motion Magic
-    /* Configure current limits   */
+    /*  Configure current limits   */
     MotionMagicConfigs mm = configs.MotionMagic;
-    mm.MotionMagicCruiseVelocity = 15; // 5 rotations per second cruise
-    mm.MotionMagicAcceleration = 800; // Target acceleration of 400 rps/s (0.25 seconds to max)
-    mm.MotionMagicJerk = 4000; // Target jerk of 4000 rps/s/s (0.1 seconds)
+    mm.MotionMagicCruiseVelocity = 6; // 5 rotations per second cruise
+    mm.MotionMagicAcceleration = 1.5; // Target acceleration of 400 rps/s (0.25 seconds to max)
+    mm.MotionMagicJerk = 50; // Target jerk of 4000 rps/s/s (0.1 seconds)
 
     Slot0Configs slot0 = configs.Slot0;
     slot0.GravityType = GravityTypeValue.Arm_Cosine;
     slot0.kS = 0.25; // Add 0.25 V output to overcome static friction
     slot0.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
     slot0.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
-    slot0.kP = 4.5; // An error of 1 rps results in 0.11 V output
-    slot0.kI = 0; // no output for integrated error
-    slot0.kD = 0; // no output for error derivative
-       
+    slot0.kP = 60;   // An error of 1 rps results in 0.11 V output
+    slot0.kI = 0;    // no output for integrated error
+    slot0.kD = 1;    // no output for error derivative
+    
+    FeedbackConfigs fdb = configs.Feedback;
+    fdb.SensorToMechanismRatio = 80;
+
     /* Retry config apply up to 5 times, report if failure */
     StatusCode status = StatusCode.StatusCodeNotInitialized;
     for (int i = 0; i < 5; ++i) {
@@ -100,7 +102,6 @@ public class IntakeWraist extends SubsystemBase {
 
   //Call by the commands to move intake wraist to positions
   public void MoveIntakeToPosition(String sMoveTo) {
-
     //set up the grab from values at Smart Dashboard perference table
     switch (sMoveTo) {
       case IntakePositions.FloorPickup:;
@@ -120,20 +121,20 @@ public class IntakeWraist extends SubsystemBase {
         break;
       case IntakePositions.HomePosition:;
         //Move to home position
-        backUp = 0.2;
+        backUp = 0.1;
         Key = IntakeHome;
         break;
     }
     //gets the current value
 	  setPoint = getPreferencesDouble(Key, backUp);
     //sets the new position to the motor controller.
-	  this.MoveToPosition(setPoint);
+	  this.MoveToPosition(setPoint/scale);
   }
 
   //Move the Intake back to the home position
   public void MoveToHomePosition() {
      /* Use voltage position */
-     m_IntakeWraistMotor.setControl(m_mmReq.withPosition(0.2).withSlot(0));
+     m_IntakeWraistMotor.setControl(m_mmReq.withPosition(0.1).withSlot(0));
   }
 
   private void MoveToPosition(double targetPos) {
@@ -155,7 +156,6 @@ public class IntakeWraist extends SubsystemBase {
 
   public void StopMotion() {
     m_IntakeWraistMotor.setControl(m_brake);
-    m_IntakeWraistMotor.setControl(mVoltageOut.withOutput(0.0));
   }
 
   /**

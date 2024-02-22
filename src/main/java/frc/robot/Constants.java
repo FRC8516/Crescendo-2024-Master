@@ -189,7 +189,7 @@ public static final class Launcher {
 
   //Shooter Positions
   public static final class ShooterPositions {
-    public static final String ExtendedPosition = "HomePosition";
+    public static final String HomePosition = "HomePosition";
     public static final String TransferPosition = "TransferPosition";
     public static final String AmpScoringPosition = "AmpScoringPosition";
   }
