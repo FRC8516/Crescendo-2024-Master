@@ -13,9 +13,9 @@ Actuators: Falcon 500, using Pigeon 2.
 -Motion Magic for routines for intake and shooter positions.
 
 ## Prerequisites
-* WPI 2024.2.1
-* SPARK MAX Firmware v1.6.3 - Adds features that are required for swerve
-* REVLib v2024.2.- - Includes APIs for the new firmware features
+* WPI 2024.3.1
+* SPARK MAX Firmware v1.6.4 - Adds features that are required for swerve
+* REVLib v2024.2.2 - Includes APIs for the new firmware features
 * Phoenix 6 v24.1.0 -- Includes APIs for firmware features ^Changed to Phoenix 6 api
 
 ## Configuration
