@@ -18,12 +18,12 @@ public class Elevator extends SubsystemBase {
 		
   /** Creates a new Elevator. */
   public Elevator() {
-	/* Factory default hardware to prevent unexpected behavior */
-    TalonFXConfiguration configs = new TalonFXConfiguration();
-	//Set configurations
-	configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;   //.CounterClockwise_Positive;
-	configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-	m_ElevatorMotor.getConfigurator().apply(configs);
+    /* Factory default hardware to prevent unexpected behavior */
+      TalonFXConfiguration configs = new TalonFXConfiguration();
+    //Set configurations
+    configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;   //.CounterClockwise_Positive;
+    configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    m_ElevatorMotor.getConfigurator().apply(configs);
    }
 
   @Override
@@ -32,7 +32,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public void GoClimbChain(double dspeed) {
-	m_ElevatorMotor.set(dspeed);
+	  m_ElevatorMotor.set(dspeed);
   }
  
 	/**

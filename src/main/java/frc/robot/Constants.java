@@ -154,19 +154,21 @@ public final class Constants {
     public static final int kIntakeWraistMotor = 11;
     //Elevator Motor - Falcon 500
     public static final int kElevatorMotor = 12;
-    //Shooter Motors - Falcon 500
-    public static final int kShooterIntakeMotor = 13;
+    //Shooter Wraist Motor - Falcon 500
     public static final int kShooterIntakeWraistMotor = 14;
 }
 
 public static final class Launcher {
   // NEO Vortex - Spark Flex
+  public static final int kInTopCanId = 13;
+  public static final int kInBotCanId = 17;
   public static final int kTopCanId = 15;
   public static final int kBottomCanId = 16;
   public static final int kCurrentLimit = 80;
-  public static final double kTopPower = 0.7;
-  public static final double kBottomPower = 0.8;
-  public static final double kIntakeVelocity = 20;
+  public static final double kTopSpeakerPower = 0.7;
+  public static final double kBottomSpeakerPower = 0.8;
+  public static final double kTopAmpPower = 0.3;
+  public static final double kBotAmpPower = 0.4;
 }
 
   //Led lights
@@ -200,7 +202,5 @@ public static final class Launcher {
     public static final String ExtendPosition = "ExtendPosition";
     public static final String AmpPosition = "AmpPosition";
   }
-
-  //Shooter
 
 }

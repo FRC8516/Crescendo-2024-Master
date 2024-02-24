@@ -16,7 +16,6 @@ public class AutomaticNoteIntake extends SequentialCommandGroup {
   /** Creates a new AutomaticNoteIntake. */
   public AutomaticNoteIntake(IntakeWraist m_IntakeWraist, IntakeNote m_IntakeNote) {
     // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new PositionIntakeWraist(m_IntakeWraist, IntakePositions.FloorPickup).withTimeout(0.1),
       new InputNote(m_IntakeNote),

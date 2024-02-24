@@ -23,6 +23,8 @@ public class IntakeNote extends SubsystemBase {
   //* Rotation Per Second */
   double dIntakeNoteSpeed = -50; // Go for plus/minus 10 rotations per second
   double dOutputNoteSpeed = 50; // Go for plus/minus 10 rotations per second
+  double dTransferSpeed = 20;
+
   //* Read Digital Input */
   private DigitalInput m_sensorInput;
  
@@ -76,9 +78,14 @@ public class IntakeNote extends SubsystemBase {
   } 
 
   //Used transfer to shooter mechanism 
-  public void ShootNote() {
+  public void ShootNoteToSpeaker() {
      /* Use voltage velocity */
      m_IntakeMotor.setControl(m_voltageVelocity.withVelocity(dOutputNoteSpeed));
+  }
+
+  public void IntakeTransferForAmp() {
+    /* Use voltage velocity */
+     m_IntakeMotor.setControl(m_voltageVelocity.withVelocity(dTransferSpeed));
   }
 
   //See if the note is intaked into holder
