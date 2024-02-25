@@ -4,6 +4,8 @@
 
 package frc.robot.commands.Shooter;
 
+import com.ctre.phoenix.sensors.Pigeon2;
+
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.ShooterPositions;
 import frc.robot.commands.Intake.TransferNoteToShooter;
@@ -15,13 +17,14 @@ import frc.robot.subsystems.ShooterWraist;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AutoShootAmp extends ParallelCommandGroup {
+
   /** Creates a new AutoShootAmp. */
   public AutoShootAmp(IntakeNote mTransferNote, ShooterWraist mWraistAmp, ShootNote mShootAmp) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new TransferNoteToShooter(mTransferNote, mShootAmp).withTimeout(0.1),
-                new PositionShooterWraist(mWraistAmp, ShooterPositions.AmpScoringPosition).withTimeout(0.1),
-                new ShootAmp(mShootAmp).withTimeout(0.2),
+    addCommands(new TransferNoteToShooter(mTransferNote, mShootAmp).withTimeout(0.25),
+                new PositionShooterWraist(mWraistAmp, ShooterPositions.AmpScoringPosition).withTimeout(0.25),
+                new ShootAmp(mShootAmp).withTimeout(0.25),
                 new PositionShooterWraist(mWraistAmp, ShooterPositions.TransferPosition).withTimeout(0.2));
   }
 }

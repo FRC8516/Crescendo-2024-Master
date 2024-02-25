@@ -21,7 +21,7 @@ public class Elevator extends SubsystemBase {
     /* Factory default hardware to prevent unexpected behavior */
       TalonFXConfiguration configs = new TalonFXConfiguration();
     //Set configurations
-    configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;   //.CounterClockwise_Positive;
+    configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     m_ElevatorMotor.getConfigurator().apply(configs);
    }
@@ -50,4 +50,3 @@ public class Elevator extends SubsystemBase {
 		return Preferences.getDouble(key, backup);
 	  }
 }
-

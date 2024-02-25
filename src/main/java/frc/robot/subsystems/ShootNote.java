@@ -48,7 +48,7 @@ public class ShootNote extends SubsystemBase {
     /*  InTake Bottom Motor */
     m_IntakeBottomMotor =
         new CANSparkMax(Constants.Launcher.kInBotCanId, CANSparkLowLevel.MotorType.kBrushless);
-    m_IntakeBottomMotor.setInverted(true);
+    m_IntakeBottomMotor.setInverted(false);
     m_IntakeBottomMotor.setSmartCurrentLimit(Constants.Launcher.kCurrentLimit);
     m_IntakeBottomMotor.setIdleMode(IdleMode.kCoast);
     //burn config to flash

@@ -23,6 +23,8 @@ import frc.robot.commands.Elevator.ClimbChain;
 import frc.robot.commands.Intake.AutomaticNoteIntake;
 import frc.robot.commands.Intake.InputNote;
 import frc.robot.commands.Intake.PositionIntakeWraist;
+import frc.robot.commands.Shooter.AutoShootAmp;
+import frc.robot.commands.Shooter.AutoShootSpeaker;
 import frc.robot.commands.Shooter.PositionShooterWraist;
 import frc.robot.commands.Shooter.ShootAmp;
 import frc.robot.commands.Shooter.ShootSpeaker;
@@ -38,7 +40,6 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.CandleControl;
 import java.util.List;
 
@@ -57,6 +58,7 @@ public class RobotContainer {
   private final IntakeNote mIntakeNote = new IntakeNote();
   private final ShootNote m_ShootNote = new ShootNote();
   private final ShooterWraist m_ShooterWraist = new ShooterWraist();
+  private final Elevator m_Elevator = new Elevator();
 
   //* Constructors for Commands */
   //Intake Commands
@@ -64,15 +66,17 @@ public class RobotContainer {
   private final InputNote m_IntakeNote = new InputNote(mIntakeNote);
   private final PositionIntakeWraist mIntakeWraistFloor = new PositionIntakeWraist(m_IntakeWraist, IntakePositions.FloorPickup);
   private final PositionIntakeWraist mIntakeWraistHome = new PositionIntakeWraist(m_IntakeWraist, IntakePositions.HomePosition);  
-  private final Elevator mElevator = new Elevator();
 
   //Shooter Commands
   private final ShootAmp m_ShootAmp = new ShootAmp(m_ShootNote);
-  private final ShootSpeaker m_ShootSpeaker = new ShootSpeaker(m_ShootNote);
-  private final PositionShooterWraist m_PositionShooterWraist = new PositionShooterWraist(m_ShooterWraist, ShooterPositions.AmpScoringPosition);
+ // private final ShootSpeaker m_ShootSpeaker = new ShootSpeaker(m_ShootNote);
+  private final AutoShootSpeaker m_AutoShootSpeaker = new AutoShootSpeaker(mIntakeNote, m_ShootNote);
+  //private final AutoShootAmp m_AutoShootAmp = new AutoShootAmp(mIntakeNote, m_ShooterWraist, m_ShootNote);
 
   //Automatic intake / position
   private final AutomaticNoteIntake m_AutomaticNoteIntake = new AutomaticNoteIntake(m_IntakeWraist, mIntakeNote);
+  //Shooter Wraist
+  private final PositionShooterWraist m_PositionShooterWraist = new PositionShooterWraist(m_ShooterWraist, ShooterPositions.AmpScoringPosition);
 
   //* The driver's joystick controller */ 
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -97,7 +101,12 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
                 true, true),
             m_robotDrive));
-     
+     // Configure the elevator command
+     m_Elevator.setDefaultCommand(
+        new RunCommand(
+            () -> m_Elevator.GoClimbChain(
+              -MathUtil.applyDeadband(m_operatorController.getLeftY(), OIConstants.kDriveDeadband)),
+              m_Elevator));
   }
 
   /**
@@ -120,15 +129,16 @@ public class RobotContainer {
     //Configure Joysticks actuators
     //TESTING mech·an·ism #*********@@@@!!!!!!
      m_driverController.a().onTrue(m_IntakeNote);
-     m_driverController.b().onTrue(m_AutomaticNoteIntake);
+  
      m_driverController.y().whileTrue(m_ShootAmp);
      m_driverController.rightBumper().onTrue(mIntakeWraistHome);
-     m_driverController.leftBumper().whileTrue(m_ShootSpeaker);
 
-    // Trigger leftClimber = new Trigger(()->m_operator.getLeftBumper()).and(()-> Math.abs(m_operator.getRawAxis(1))>0.1);
-    // Trigger ChainClimb = new Trigger(true, () -> m_operatorController.leftBumper());   //new Trigger(()->m_operatorController.leftBumper()).and(()-> Math.abs(m_operatorController.getRawAxis(1))>0.1);
-     
-    // ChainClimb.whileTrue(new ClimbChain(()-> -m_operatorController.getRawAxis(1), mElevator));
+    //Operator Joystick triggers
+    m_operatorController.leftTrigger().onTrue(m_AutomaticNoteIntake);
+    m_operatorController.rightTrigger().onTrue(m_AutoShootSpeaker);
+   // m_operatorController.rightBumper().onTrue(m_AutoShootAmp);
+    m_operatorController.a().onTrue(m_PositionShooterWraist);
+
   }
 
   /**

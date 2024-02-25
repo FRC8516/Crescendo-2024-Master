@@ -17,7 +17,7 @@ public class AutoShootSpeaker extends ParallelCommandGroup {
   public AutoShootSpeaker(IntakeNote mIntakeNote, ShootNote mShootSpeaker) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new ShootSpeaker(mShootSpeaker).withTimeout(0.2),
-                 new OutTakeNote(mIntakeNote).withTimeout(0.15) );
+    addCommands(new ShootSpeaker(mShootSpeaker).withTimeout(1.5),
+                 new OutTakeNote(mIntakeNote).withTimeout(1) );
   }
 }
