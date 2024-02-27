@@ -31,7 +31,7 @@ public final class Constants {
     public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
 
     public static final double kDirectionSlewRate = 1.2; // radians per second
-    public static final double kMagnitudeSlewRate = 1.8; // percent per second (1 = 100%)
+    public static final double kMagnitudeSlewRate = 3.0; // percent per second (1 = 100%)
     public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
 
     // Chassis configuration
@@ -156,12 +156,14 @@ public final class Constants {
     public static final int kElevatorMotor = 12;
     //Shooter Wraist Motor - Falcon 500
     public static final int kShooterIntakeWraistMotor = 14;
+    //Intake feed time
+    public static final double kIntakeFeedTime = 3.0;
 }
 
 public static final class Launcher {
   // NEO Vortex - Spark Flex
   public static final int kInTopCanId = 13;
-  public static final int kInBotCanId = 17;
+  public static final int kInBotCanId = 17;  
   public static final int kTopCanId = 15;
   public static final int kBottomCanId = 16;
   public static final int kCurrentLimit = 80;

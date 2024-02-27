@@ -4,8 +4,6 @@
 
 package frc.robot.commands.Shooter;
 
-import com.ctre.phoenix.sensors.Pigeon2;
-
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.ShooterPositions;
 import frc.robot.commands.Intake.TransferNoteToShooter;

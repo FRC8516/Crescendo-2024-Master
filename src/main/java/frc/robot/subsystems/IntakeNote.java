@@ -99,7 +99,6 @@ public class IntakeNote extends SubsystemBase {
 
   //* Stop motor motion / disable controller */
   public void StopMotion() {
-     SmartDashboard.putNumber("Intake Speed",0);
      m_IntakeMotor.setControl(m_voltageVelocity.withVelocity(0));
      m_IntakeMotor.stopMotor();
   }

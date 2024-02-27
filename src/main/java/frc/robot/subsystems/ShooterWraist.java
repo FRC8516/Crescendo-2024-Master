@@ -29,7 +29,7 @@ public class ShooterWraist extends SubsystemBase {
     //backup key values not returned from perference table on shuffleboard....100:1 Gear box
 	  final double PositionHome = 0.1;
 	  final double PositionTransfer = 5;
-    final double PositionAmp = 180;
+    final double PositionAmp = 40;
     //Use to get from the preference table
 	  final String ShooterHome = "Shooter Home";
 	  final String ShooterTransfer = "Shooter Transfer";
@@ -68,6 +68,7 @@ public class ShooterWraist extends SubsystemBase {
     slot0.kP = 60;   // An error of 1 rps results in 0.11 V output
     slot0.kI = 0;    // no output for integrated error
     slot0.kD = 1;    // no output for error derivative
+   // slot0.kG = 0;
     
     FeedbackConfigs fdb = configs.Feedback;
     fdb.SensorToMechanismRatio = 100;

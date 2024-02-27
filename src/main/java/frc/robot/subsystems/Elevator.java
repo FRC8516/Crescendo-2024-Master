@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ManipulatorConstants;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -41,12 +40,12 @@ public class Elevator extends SubsystemBase {
     * return the backup value, and also start a new entry in the preferences
     * table.
 	 * @return 
-    */
+    
     private double getPreferencesDouble(String key, double backup) {
 		if (!Preferences.containsKey(key)) {
 		  Preferences.initDouble(key, backup);
 		  Preferences.setDouble(key, backup);
 		}
 		return Preferences.getDouble(key, backup);
-	  }
+	  }  */
 }
