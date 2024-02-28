@@ -29,7 +29,7 @@ public class ShooterWraist extends SubsystemBase {
     //backup key values not returned from perference table on shuffleboard....100:1 Gear box
 	  final double PositionHome = 0.1;
 	  final double PositionTransfer = 5;
-    final double PositionAmp = 40;
+    final double PositionAmp = 20;
     //Use to get from the preference table
 	  final String ShooterHome = "Shooter Home";
 	  final String ShooterTransfer = "Shooter Transfer";
@@ -41,6 +41,8 @@ public class ShooterWraist extends SubsystemBase {
     /* Keep a brake request so we can disable the motor */
     private final NeutralOut m_brake = new NeutralOut();
     private double scale = 360;
+    //local variable to keep track of position
+    StatusSignal<Double> dCurrentPosition;
 	
   /** Creates a new ShooterWraist. */
   public ShooterWraist() {
@@ -68,7 +70,6 @@ public class ShooterWraist extends SubsystemBase {
     slot0.kP = 60;   // An error of 1 rps results in 0.11 V output
     slot0.kI = 0;    // no output for integrated error
     slot0.kD = 1;    // no output for error derivative
-   // slot0.kG = 0;
     
     FeedbackConfigs fdb = configs.Feedback;
     fdb.SensorToMechanismRatio = 100;
@@ -90,8 +91,8 @@ public class ShooterWraist extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     //Updates position on the dashboard
-    StatusSignal<Double> dPosition = m_ShooterWraistMotor.getPosition();
-    SmartDashboard.putNumber("Shooter Position", dPosition.getValue());
+     dCurrentPosition = m_ShooterWraistMotor.getPosition();
+     SmartDashboard.putNumber("Shooter Position", dCurrentPosition.getValue());
   }
 
   //Call by the commands to move intake wraist to positions
@@ -123,6 +124,17 @@ public class ShooterWraist extends SubsystemBase {
   private void MoveToPosition(double targetPos) {
     /* Use voltage position */
      m_ShooterWraistMotor.setControl(m_mmReq.withPosition(targetPos).withSlot(0));
+  }
+
+   //This checks Current positon to setpoint for the commands calls - isFinished flag
+   public Boolean isShooterWraistInPosition() {
+    double dError = dCurrentPosition.getValue() - setPoint;
+    //Returns the check to see if the elevator is in position
+    if ((dError < 0.5) || (dError > -0.5)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   /**

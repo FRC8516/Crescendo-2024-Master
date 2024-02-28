@@ -14,9 +14,9 @@ import frc.robot.Constants.ShooterPositions;
 import frc.robot.commands.Intake.AutomaticNoteIntake;
 import frc.robot.commands.Intake.InputNote;
 import frc.robot.commands.Intake.PositionIntakeWraist;
+import frc.robot.commands.Shooter.AutoShootAmp;
 import frc.robot.commands.Shooter.AutoShootSpeaker;
 import frc.robot.commands.Shooter.PositionShooterWraist;
-import frc.robot.commands.Shooter.ShootAmp;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.IntakeNote;
@@ -55,19 +55,18 @@ public class RobotContainer {
   //Intake Commands
   private final IntakeWraist m_IntakeWraist = new IntakeWraist();
   private final InputNote m_IntakeNote = new InputNote(mIntakeNote);
-  private final PositionIntakeWraist mIntakeWraistFloor = new PositionIntakeWraist(m_IntakeWraist, IntakePositions.FloorPickup);
+  private final PositionIntakeWraist m_IntakeToLoadPosition = new PositionIntakeWraist(m_IntakeWraist, IntakePositions.LoadingStationPosition);
   private final PositionIntakeWraist mIntakeWraistHome = new PositionIntakeWraist(m_IntakeWraist, IntakePositions.HomePosition);  
 
-  //Shooter Commands
-  private final ShootAmp m_ShootAmp = new ShootAmp(m_ShootNote);
- // private final ShootSpeaker m_ShootSpeaker = new ShootSpeaker(m_ShootNote);
+  /* Shooter Commands  */
   private final AutoShootSpeaker m_AutoShootSpeaker = new AutoShootSpeaker(mIntakeNote, m_ShootNote);
-  //private final AutoShootAmp m_AutoShootAmp = new AutoShootAmp(mIntakeNote, m_ShooterWraist, m_ShootNote);
+  private final AutoShootAmp m_AutoShootAmp = new AutoShootAmp(mIntakeNote, m_ShooterWraist, m_ShootNote);
 
   //Automatic intake / position
   private final AutomaticNoteIntake m_AutomaticNoteIntake = new AutomaticNoteIntake(m_IntakeWraist, mIntakeNote);
   //Shooter Wraist
   private final PositionShooterWraist m_PositionShooterWraist = new PositionShooterWraist(m_ShooterWraist, ShooterPositions.AmpScoringPosition);
+  private final PositionShooterWraist m_ShooterWraistTrans = new PositionShooterWraist(m_ShooterWraist, ShooterPositions.TransferPosition);
 
   //* The driver's joystick controller */ 
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -130,8 +129,10 @@ public class RobotContainer {
     //Operator Joystick triggers
     m_operatorController.leftTrigger().onTrue(m_AutomaticNoteIntake);
     m_operatorController.rightTrigger().onTrue(m_AutoShootSpeaker);
-    // m_operatorController.rightBumper().onTrue(m_AutoShootAmp);
+    m_operatorController.rightBumper().onTrue(m_IntakeToLoadPosition);
     m_operatorController.a().onTrue(m_PositionShooterWraist);
+    m_operatorController.b().onTrue(m_AutoShootAmp);
+    m_operatorController.x().onTrue(m_ShooterWraistTrans);
 
   }
 

@@ -158,6 +158,12 @@ public final class Constants {
     public static final int kShooterIntakeWraistMotor = 14;
     //Intake feed time
     public static final double kIntakeFeedTime = 3.0;
+    //Position Intake Wraist time out
+    public static final double kIntakeWraistTime = 1.0;
+    //Shooter Wraist time out
+    public static final double kShooterWraistTime = 1.0;
+    //Transfer Note from intake to shooter
+    public static final double kTransferTime = 1.25;
 }
 
 public static final class Launcher {

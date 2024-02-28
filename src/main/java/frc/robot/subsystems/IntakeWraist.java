@@ -24,13 +24,11 @@ import frc.robot.Constants.ManipulatorConstants;
 public class IntakeWraist extends SubsystemBase {
     /* Hardware */
     private final TalonFX m_IntakeWraistMotor = new TalonFX(ManipulatorConstants.kIntakeWraistMotor, "rio");
-    //Motion Magic
+    //Motion Magic Voltage output
     private final MotionMagicVoltage m_mmReq = new MotionMagicVoltage(0);
-    // create a Motion Magic Velocity request, voltage output
-    // private final MotionMagicVelocityVoltage m_request = new MotionMagicVelocityVoltage(0);
     // backup key values not returned from perference table on shuffleboard....80:1 Gear box
     // This value is entered degrees
-	  final double PickUpPosition = 200;
+	  final double PickUpPosition = 137;
 	  final double TransferPosition = 40;
     final double LoadingStationPosition = 90;
     final double HomePosition = 0.1;
@@ -47,7 +45,7 @@ public class IntakeWraist extends SubsystemBase {
     StatusSignal<Double> dCurrentPosition;
     /* Keep a brake request so we can disable the motor */
     private final NeutralOut m_brake = new NeutralOut();
-    //private final CoastOut m_coast = new CoastOut();
+    /* Scale for 360 degrees */
     private double scale = 360;
   
     /** Creates a new IntakeWraist. */
@@ -59,7 +57,7 @@ public class IntakeWraist extends SubsystemBase {
     configs.HardwareLimitSwitch.ReverseLimitAutosetPositionValue = 0;
     //Software limits - forward motion
     configs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 300;  //28
+    configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 139;  //28
 
     /** *********************************************************************************************
      *  Motion Magic
@@ -77,7 +75,7 @@ public class IntakeWraist extends SubsystemBase {
     slot0.kP = 60;   // An error of 1 rps results in 0.11 V output
     slot0.kI = 0;    // no output for integrated error
     slot0.kD = 1;    // no output for error derivative
-    
+    // 80:1 Gearbox
     FeedbackConfigs fdb = configs.Feedback;
     fdb.SensorToMechanismRatio = 80;
 
@@ -145,7 +143,6 @@ public class IntakeWraist extends SubsystemBase {
   //This checks Current positon to setpoint for the commands calls - isFinished flag
   public Boolean isIntakeWraistInPosition() {
     double dError = dCurrentPosition.getValue() - setPoint;
-    SmartDashboard.putNumber("Intake Error", dError);
     //Returns the check to see if the elevator is in position
     if ((dError < 0.5) || (dError > -0.5)) {
       return true;
