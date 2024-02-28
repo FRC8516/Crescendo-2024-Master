@@ -40,7 +40,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Path 1"
+                        "pathName": "Path_Center_2Note1"
                       }
                     }
                   ]
@@ -52,7 +52,38 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Path 1.2"
+            "pathName": "Path_center_2Note2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Auto Shoot Speaker"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Auto Note Intake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Path_Center_3Note1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Path_Center_3Note2"
           }
         },
         {
