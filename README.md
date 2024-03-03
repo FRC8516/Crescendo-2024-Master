@@ -25,5 +25,5 @@ It is possible that this project will not work for your robot right out of the b
 These values can be adjusted in the `Constants.java` file.
 
 ## Updated During Season
- -Updates during week zero
- -Changes during the LSR event
+* Updates during week zero
+* Changes during the LSR event
