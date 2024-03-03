@@ -1,4 +1,4 @@
-# CRESCENDO v2024.3
+# CRESCENDO v2024.4
 
 FRC 8516 Wired Up
 
@@ -15,11 +15,15 @@ Actuators: Falcon 500, using Pigeon 2.
 ## Prerequisites
 * WPI 2024.3.1
 * SPARK MAX Firmware v1.6.4 - Adds features that are required for swerve
-* REVLib v2024.2.2 - Includes APIs for the new firmware features
-* Phoenix 6 v24.1.0 -- Includes APIs for firmware features ^Changed to Phoenix 6 api
+* REVLib v2024.2.3 - Includes APIs for the new firmware features
+* Phoenix 6 v24.2.0 -- Includes APIs for firmware features ^Changed to Phoenix 6 api
 
 ## Configuration
 
 It is possible that this project will not work for your robot right out of the box. Various things like the CAN IDs, PIDF gains, chassis configuration, etc. must be determined for your own robot!
 
 These values can be adjusted in the `Constants.java` file.
+
+## Updated During Season
+ -Updates during week zero
+ -Changes during the LSR event
