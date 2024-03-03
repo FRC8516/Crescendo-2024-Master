@@ -64,6 +64,7 @@ public class IntakeNote extends SubsystemBase {
     //*  game piece detection   */
     m_sensorInput = new DigitalInput(0);
     SmartDashboard.putBoolean("Game Piece", false);
+    SmartDashboard.putNumber("Intake Time Out", 3.0);
   }
 
   @Override

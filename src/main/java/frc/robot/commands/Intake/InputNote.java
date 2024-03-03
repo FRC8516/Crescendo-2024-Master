@@ -6,12 +6,12 @@ package frc.robot.commands.Intake;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
 import frc.robot.subsystems.IntakeNote;
 
 public class InputNote extends Command {
   private final IntakeNote m_InputNote;
   private Timer m_timer;
+  double m_TimeOut= 3.0;
   boolean m_isdone;
 
   /** Creates a new IntakeNote. */
@@ -24,6 +24,7 @@ public class InputNote extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+   // SmartDashboard.getNumber("Intake Time Out", m_TimeOut);
     m_InputNote.NoteIntake();
     m_isdone = false;
     //Start timer as second kill out this command
@@ -40,7 +41,7 @@ public class InputNote extends Command {
       m_isdone = true;
     }
     /* This ensures this commands ends if sensor not found */
-    if (m_timer.get() > Constants.ManipulatorConstants.kIntakeFeedTime) {
+    if (m_timer.get() > m_TimeOut) {
       m_isdone = true;
     }
   }

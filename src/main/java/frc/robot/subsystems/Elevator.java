@@ -19,7 +19,13 @@ public class Elevator extends SubsystemBase {
   public Elevator() {
     /* Factory default hardware to prevent unexpected behavior */
       TalonFXConfiguration configs = new TalonFXConfiguration();
-    //Set configurations
+    //Software limits - Reverse motion
+    //configs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    //configs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0;
+    //Software limits - forward motion
+    //configs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    //configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ;
+    //Set configurations  
     configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     m_ElevatorMotor.getConfigurator().apply(configs);
