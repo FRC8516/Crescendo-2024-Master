@@ -28,7 +28,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.subsystems.CandleControl;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -44,7 +43,7 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   //* Candle Light Controller */
-  public CandleControl m_CandleControl = new CandleControl();
+ // public CandleControl m_CandleControl = new CandleControl();
   //* Constructors for Subsystems */
   private final IntakeNote mIntakeNote = new IntakeNote();
   private final ShootNote m_ShootNote = new ShootNote();
@@ -125,10 +124,11 @@ public class RobotContainer {
     //Driver Joystick triggers
      m_driverController.a().onTrue(m_IntakeNote);
      m_driverController.rightBumper().onTrue(mIntakeWraistHome);
+     m_driverController.rightTrigger().onTrue(m_AutoShootSpeaker);
 
     //Operator Joystick triggers
     m_operatorController.leftTrigger().onTrue(m_AutomaticNoteIntake);
-    m_operatorController.rightTrigger().onTrue(m_AutoShootSpeaker);
+    //m_operatorController.rightTrigger().onTrue(m_AutoShootSpeaker);
     m_operatorController.rightBumper().onTrue(m_IntakeToLoadPosition);
     m_operatorController.a().onTrue(m_PositionShooterWraist);
     m_operatorController.b().onTrue(m_AutoShootAmp);

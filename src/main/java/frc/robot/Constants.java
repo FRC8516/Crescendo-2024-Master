@@ -63,7 +63,7 @@ public final class Constants {
    public static final int kRearRightTurningCanId = 5;
 
    public static final boolean kGyroReversed = false;
-   public static final int kPigeon2CanId = 1;
+   public static final int kPigeon2CanId = 20;
   }
   
   public static final class ModuleConstants {
@@ -125,7 +125,7 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
     public static final int kOperatorControllerPort = 1;
     public static final double kDriveDeadband = 0.15;  //@0.05
-    public static final int CANdleID = 1;
+    public static final int CANdleID = 21;
   }
 
   public static final class AutoConstants {
@@ -157,7 +157,7 @@ public final class Constants {
     //Shooter Wraist Motor - Falcon 500
     public static final int kShooterIntakeWraistMotor = 14;
     //Intake feed time
-    public static final double kIntakeFeedTime = 3.0;
+    public static final double kIntakeFeedTime = 6.0;
     //Position Intake Wraist time out
     public static final double kIntakeWraistTime = 1.0;
     //Shooter Wraist time out
