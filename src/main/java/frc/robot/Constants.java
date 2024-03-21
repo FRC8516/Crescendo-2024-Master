@@ -159,7 +159,7 @@ public final class Constants {
     //Intake feed time
     public static final double kIntakeFeedTime = 6.0;
     //Position Intake Wraist time out
-    public static final double kIntakeWraistTime = 1.0;
+    public static final double kIntakeWraistTime = 0.10;
     //Shooter Wraist time out
     public static final double kShooterWraistTime = 1.0;
     //Transfer Note from intake to shooter
