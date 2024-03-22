@@ -38,7 +38,7 @@ public class PositionIntakeWraist extends Command {
   @Override
   public void execute() {
     /* This ensures this commands ends if sensor not found */
-    if (m_timer.get() > Constants.ManipulatorConstants.kIntakeWraistMotor) {
+    if (m_timer.get() > Constants.ManipulatorConstants.kIntakeWraistTime) {
       m_isdone = true;
     }
     /* This checks to see if arm is position */
