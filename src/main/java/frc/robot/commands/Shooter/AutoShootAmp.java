@@ -20,7 +20,7 @@ public class AutoShootAmp extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new TransferNoteToShooter(mTransferNote, mShootAmp),
-                new PositionShooterWraist(mWraistAmp, ShooterPositions.AmpScoringPosition),
+                new PositionShooterWraist(mWraistAmp, ShooterPositions.AmpScoringPosition).withTimeout(1),
                 new ShootAmp(mShootAmp).withTimeout(1.5),
                 new PositionShooterWraist(mWraistAmp, ShooterPositions.TransferPosition)
                 );

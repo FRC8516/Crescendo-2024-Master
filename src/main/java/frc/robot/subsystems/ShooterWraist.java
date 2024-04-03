@@ -128,9 +128,10 @@ public class ShooterWraist extends SubsystemBase {
 
    //This checks Current positon to setpoint for the commands calls - isFinished flag
    public Boolean isShooterWraistInPosition() {
-    double dError = dCurrentPosition.getValue() - setPoint;
+    double dScaledSetpoint = setPoint / scale;
+    double dError = dCurrentPosition.getValue() - dScaledSetpoint;
     //Returns the check to see if the elevator is in position
-    if ((dError < 0.5) || (dError > -0.5)) {
+    if ((dError < 0.05) || (dError > -0.05)) {
       return true;
     } else {
       return false;
