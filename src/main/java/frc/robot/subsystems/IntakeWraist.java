@@ -142,9 +142,10 @@ public class IntakeWraist extends SubsystemBase {
 
   //This checks Current positon to setpoint for the commands calls - isFinished flag
   public Boolean isIntakeWraistInPosition() {
-    double dError = dCurrentPosition.getValue() - setPoint;
+    double dScaledSetpoint = setPoint/scale;
+    double dError = dCurrentPosition.getValue() - dScaledSetpoint;
     //Returns the check to see if the elevator is in position
-    if ((dError < 0.5) || (dError > -0.5)) {
+    if ((dError < 0.05) || (dError > -0.05)) {
       return true;
     } else {
       return false;
@@ -163,10 +164,10 @@ public class IntakeWraist extends SubsystemBase {
 	 * @return 
     */
     private double getPreferencesDouble(String key, double backup) {
-		if (!Preferences.containsKey(key)) {
-		  Preferences.initDouble(key, backup);
-		  Preferences.setDouble(key, backup);
-		}
-		return Preferences.getDouble(key, backup);
+      if (!Preferences.containsKey(key)) {
+        Preferences.initDouble(key, backup);
+        Preferences.setDouble(key, backup);
+      }
+      return Preferences.getDouble(key, backup);
 	  }
 }
