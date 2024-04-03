@@ -29,7 +29,7 @@ public class PositionIntakeWraist extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+    // m_IntakeWraist.MoveIntakeToPosition(m_NewPosition);
   }
 
   // Called once the command ends or is interrupted.
@@ -39,6 +39,6 @@ public class PositionIntakeWraist extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_IntakeWraist.isIntakeWraistInPosition();
+    return false;
   }
 }
